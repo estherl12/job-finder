@@ -13,7 +13,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import path from 'path';
 import { bloginterface } from 'src/models/user.interface';
 import { UsersService } from 'src/users/services/users/users.service';
 
@@ -42,12 +41,10 @@ export class UsersController {
     }),
   )
   @ApiBody({ type: bloginterface })
-  
   createBlog(
     @Body() blog: bloginterface,
     @UploadedFile() image: Express.Multer.File,
   ): Promise<bloginterface> {
-    console.log(image);
     
     console.log(image.path);
     blog.image = `${this.SERVER_URL}${image.path}`;
@@ -71,7 +68,27 @@ export class UsersController {
     return this.blogService.deleteOne(Number(id));
   }
 
-  
+  //   @Post('upload')
+  //   @UseInterceptors(
+  //     FileInterceptor('file', {
+  //       storage: diskStorage({
+  //         destination: './files',
+  //         filename: (req, file, callback) => {
+  //           const uniqueSuffix =
+  //             Date.now() + '-' + Math.round(Math.random() * 1000000000);
+
+  //           const ext = extname(file.originalname);
+  //           const filename = `${file.originalname}-${uniqueSuffix}${ext}`;
+  //           callback(null, filename);
+  //         },
+  //       }),
+  //     }),
+  //   )
+  //   uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //     console.log(file);
+
+  //     return 'file uploaded';
+  //   }
 
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
