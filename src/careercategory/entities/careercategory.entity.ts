@@ -12,6 +12,7 @@ sector:string
 
 @OneToMany(()=>Careervacancy,(vacancy)=>vacancy.careercategory,{
     // cascade:['insert','remove','update']
+    
 })
 vacancy:Careervacancy
 

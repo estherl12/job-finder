@@ -91,13 +91,14 @@ export class EndusersController {
   @ApiBody({type:EnduserupdateDto})
   async updateUser(
     @Param('id') id:number,
-    @CurrentUser() currentuser:enduser,
+    @CurrentUser() currentuser,
     @Body() userdetails,
   ){
     const olduser = await this.endUserService.findUser(id)
-    console.log("🚀 ~ file: endusers.controller.ts:103 ~ EndusersController ~ userdetails:", userdetails)
+    console.log(olduser);
+    console.log(currentuser.userId);
     
-    if(olduser.id!=currentuser.id){
+    if(olduser.email!=currentuser.email){
       throw new ForbiddenException("You are forbidden to update");
     }
     const user = await this.endUserService.updateUser(id,userdetails);
@@ -115,7 +116,7 @@ export class EndusersController {
   @Delete(':id')
   async deleteUser(
     @Param('id' ) id:number , 
-    @CurrentUser() currentuser : enduser,
+    @CurrentUser() currentuser ,
   ){
     const userFind = await this.endUserService.findUser(id);
     

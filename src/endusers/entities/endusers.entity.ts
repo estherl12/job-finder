@@ -47,14 +47,15 @@ export class enduser{
     vacancy:Careervacancy
 
     @OneToMany(()=>Careercategory,(careercategory)=>careercategory.user,{
-        onUpdate:'CASCADE'
+        onDelete:'SET NULL',
+        onUpdate:'CASCADE'    
     })
     careercategory:Careercategory
 
-    @OneToMany(()=>Careerapplication,(applicants)=>applicants.user)
+    @OneToMany(()=>Careerapplication,(applicants)=>applicants.user,)
     applicants:Careerapplication
 
-    @OneToMany(()=>Company,(company)=>company.employer,{nullable:true})
-    @JoinColumn({name:'company_id'})
-    company:Company
+    // @OneToMany(()=>Company,(company)=>company.employer,{nullable:true})
+    // @JoinColumn({name:'company_id'})
+    // company:Company
 }

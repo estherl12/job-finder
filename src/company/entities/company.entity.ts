@@ -1,3 +1,4 @@
+import { Careervacancy } from "src/careervacancy/entities/careervacancy.entity";
 import { enduser } from "src/endusers/entities/endusers.entity";
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -18,8 +19,10 @@ export class Company {
     @Column()
     companysize:string
 
-    @OneToMany(()=>enduser,(employer)=>employer.company)
-    @JoinColumn({name:'employer_id'})
-    employer:enduser
+    // @OneToMany(()=>enduser,(employer)=>employer.company)
+    // @JoinColumn({name:'employer_id'})
+    // employer:enduser
     
+    @OneToMany(()=>Careervacancy,(vacancy)=>vacancy.company)
+    vacancy:Careervacancy
 }

@@ -14,7 +14,7 @@ export class CareerapplicationsService {
   private readonly applicants:Repository<Careerapplication>,
   private vacancyService:CareervacancyService,
   ){}
-  async create(createCareerapplicationDto: CreateCareerapplicationDto):Promise<Careerapplication> {
+  async create(createCareerapplicationDto: CreateCareerapplicationDto,user:enduser):Promise<Careerapplication> {
     const vacancyFind = await this.vacancyService.findOne(createCareerapplicationDto.vacancy_id);
     if(!vacancyFind){
       throw new NotFoundException("Vacancy not found")
@@ -23,12 +23,15 @@ export class CareerapplicationsService {
     applicant.name = createCareerapplicationDto.name;
     applicant.email = createCareerapplicationDto.email;
     applicant.file = createCareerapplicationDto.file;
-    applicant.vacancy = vacancyFind
+    applicant.vacancy = vacancyFind 
+    applicant.user =user
     return await this.applicants.save(applicant);
   }
 
   async findAll() {
-   return await this.applicants.findAndCount({relations:{vacancy:true}});
+  //  return await this.applicants.findAndCount({relations:{vacancy:true}});
+  return await this.applicants.findAndCount();
+
   }
 
   async findOne(id: number) {
@@ -43,7 +46,7 @@ export class CareerapplicationsService {
   }
 
   async update(id: number, updateCareerapplicationDto: UpdateCareerapplicationDto,user:enduser) {
-    const vacancy = await this.vacancyService.findOne(updateCareerapplicationDto.vacancy_id);
+    const vacancy = await this.vacancyService.findOne(+updateCareerapplicationDto.vacancy_id);
 
     const applicant = await this.applicants.findOne({
       where:{id:id},
@@ -52,9 +55,15 @@ export class CareerapplicationsService {
     if(!applicant){
       throw new NotFoundException("Applicant Not Found with this id")
     }
-    if(applicant.user.id!=user.id){
+   console.log(applicant.user);
+   console.log(user);
+   
+   
+    if(applicant.user.email!=user.email){
       throw new ForbiddenException("Forbidden to use this")
     }
+    
+    
     applicant.name = updateCareerapplicationDto.name;
     applicant.email = updateCareerapplicationDto.email;
     applicant.file = updateCareerapplicationDto.file;
@@ -69,8 +78,8 @@ export class CareerapplicationsService {
       where:{id:id},
       relations:{user:true}
     })
-    if(applicant.user.id!=user.id){ 
-      throw new ForbiddenException("forbidden to update");
+    if(applicant.user.email!=user.email){ 
+      throw new ForbiddenException("forbidden to delete");
     }
     if(!applicant){
       throw new NotFoundException("Applicant Not Found with this id")

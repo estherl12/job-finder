@@ -56,10 +56,10 @@ export class EndusersService {
     newUsers.mobile = userDetails.mobile;
     newUsers.name = userDetails.name;
     newUsers.password = userDetails.password;
-
+    newUsers.role = Role.Applicant
     // await Object.assign(newUsers,userDetails);
 
-    const playload = { username: newUsers.name, sub: newUsers.id };
+    const playload = { username: newUsers.name, sub: newUsers.id , Role:newUsers.role};
     const token = this.jwtService.sign(playload);
 
     newUsers.accesstoken = token;
@@ -111,15 +111,16 @@ export class EndusersService {
     const olduser = await this.endUserRepo.findOne({
       where: { id: id },
     });
-    const NewUser = new enduser();
+    // const NewUser = new enduser();
 
-    NewUser.password = editDetails.password;
-    NewUser.name = editDetails.name;
-    NewUser.email = editDetails.email;
-    NewUser.mobile = editDetails.mobile;
+    olduser.password = editDetails.password;
+    olduser.name = editDetails.name;
+    olduser.email = editDetails.email;
+    olduser.mobile = editDetails.mobile;
+    
     return this.endUserRepo.save({
       ...olduser,
-      ...NewUser,
+      ...editDetails,
     });
   }
 

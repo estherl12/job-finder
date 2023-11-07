@@ -25,6 +25,8 @@ import { Careervacancy } from './careervacancy/entities/careervacancy.entity';
 import { Careerapplication } from './careerapplications/entities/careerapplication.entity';
 import { CompanyModule } from './company/company.module';
 import { Company } from './company/entities/company.entity';
+import { CmsModule } from './cms/cms.module';
+import { Cms } from './cms/entities/cm.entity';
 
 @Module({
   imports: [
@@ -45,6 +47,7 @@ import { Company } from './company/entities/company.entity';
         Careervacancy,
         Careerapplication,
         Company,
+        Cms
       ],
       synchronize: true,
       autoLoadEntities: true, // every entity registered through the forFeature() method will be automatically added to the entities array of the configuration object.
@@ -64,6 +67,8 @@ import { Company } from './company/entities/company.entity';
     CareervacancyModule,
     CareerapplicationsModule,
     CompanyModule,
+    CmsModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],

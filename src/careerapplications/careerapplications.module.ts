@@ -12,11 +12,13 @@ import { CareercategoryService } from 'src/careercategory/careercategory.service
 import { enduser } from 'src/endusers/entities/endusers.entity';
 import { EndusersService } from 'src/endusers/endusers.service';
 import { JwtService } from '@nestjs/jwt';
+import { CompanyModule } from 'src/company/company.module';
 
 @Module({
   imports:[
   TypeOrmModule.forFeature([Careerapplication,Careervacancy,Careercategory,enduser]),
   CareervacancyModule,
+  CompanyModule,
   CareercategoryModule
 ],
   controllers: [CareerapplicationsController],

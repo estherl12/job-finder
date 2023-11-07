@@ -2,6 +2,7 @@ import { FileValidator } from '@nestjs/common';
 import { Express } from 'express';
 import { fileTypeFromFile } from 'file-type';
 import * as fileType from 'file-type-mime';
+
 export interface CustomUploadTypeValidatorOptions {
   fileType: string[];
 }

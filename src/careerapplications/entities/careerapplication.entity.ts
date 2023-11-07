@@ -17,13 +17,16 @@ export class Careerapplication {
     file:string;
 
     @ManyToOne(()=>Careervacancy,(vacancy)=>vacancy.applicants,{
-        onDelete:'CASCADE',
+        onDelete:'SET NULL',
         onUpdate:'CASCADE'
     })
     @JoinColumn({name:'vacancy_id'})
     vacancy:Careervacancy
 
-    @ManyToOne(()=>enduser,(user)=>user.applicants)
+    @ManyToOne(()=>enduser,(user)=>user.applicants,{
+        onDelete:'SET NULL',
+        onUpdate:'CASCADE'
+    })
     @JoinColumn({name:'user_id'})
     user:enduser
 }

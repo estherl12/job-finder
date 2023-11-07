@@ -6,9 +6,9 @@ export const dataSourceOptions: DataSourceOptions = {
  type: 'mysql',
  host: 'localhost',
  port: 3306,
- username: '',
- password: '',
- database: '',
+ username: 'root',
+ password: 'mypassword',
+ database: 'blog',
  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
 
  migrations: [__dirname + 'dist/config/migrations/*{.ts,.js}'],

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,7 +9,8 @@ import { EndusersService } from 'src/endusers/endusers.service';
 @Injectable()
 export class CompanyService {
   constructor(
-    @InjectRepository(Company) private companies: Repository<Company>, // private userService: EndusersService,
+    @InjectRepository(Company) private companies: Repository<Company>,
+    //  private userService: EndusersService,
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto) {
@@ -29,13 +30,20 @@ export class CompanyService {
 
   async findOne(id: number) {
     return await this.companies.findOne({
-      where: { id: id },
-      relations: { employer: true },
-    });
+      where: { id: id }    });
   }
 
   async update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return await this.companies.update(id, updateCompanyDto);
+    const company = await this.companies.findOne({where:{id:id}})
+  if(!company){
+    throw new NotFoundException("Comapny not found")
+  }
+    company.name= updateCompanyDto.name;
+    company.location = updateCompanyDto.location
+    company.companytype = updateCompanyDto.companytype
+    company.companysize = updateCompanyDto.companysize
+
+    return await this.companies.save({...company,...updateCompanyDto});
   }
 
   async remove(id: number) {

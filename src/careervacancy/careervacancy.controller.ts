@@ -19,28 +19,6 @@ export class CareervacancyController {
   constructor(private readonly careervacancyService: CareervacancyService,
     private readonly userService:EndusersService) {}
 
-  @Post()
-  @UseGuards(AuthGuardJwt,RolesGuard)
-  @Roles(Role.Employer)
-  @ApiBearerAuth('JWT-auth')
-  @ApiBody({type:CreateCareervacancyDto})
-  @UseInterceptors(NoFilesInterceptor())
-  @ApiConsumes('multipart/form-data')
-  async create(
-    @Body() createCareervacancyDto: CreateCareervacancyDto,
-    @CurrentUser() Currentuser) {
-     
-     const user = await this.userService.findUser(Currentuser.userId);
-    const data = await this.careervacancyService.create(createCareervacancyDto,user);
-    delete data.user.password
-    delete data.user.accesstoken
-    return {
-      status:200,
-      message:'Job posted successfully',
-      job:data
-    }
-  }
-
   @Get()
   async findAll() {
     const [vacancy,count]=await this.careervacancyService.findAll();
@@ -53,7 +31,7 @@ export class CareervacancyController {
   @Get('/admin/:id')
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
-  @Roles(Role.Employer)
+  @Roles(Role.Employer,Role.Admin)
   async findOne(@Param('id') id: string) {
     const data=await this.careervacancyService.findOneWithRelations(+id);
     return {
@@ -65,7 +43,7 @@ export class CareervacancyController {
   @Get('/user/:id')
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
-  @Roles(Role.Applicant)
+  @Roles(Role.Applicant,Role.Admin)
   async findOneById(@Param('id') id: string) {
     const data=await this.careervacancyService.findOne(+id);
     return {
@@ -73,10 +51,34 @@ export class CareervacancyController {
       job:data
     }
   }
+  @Post()
+  @UseGuards(AuthGuardJwt,RolesGuard)
+  @Roles(Role.Employer,Role.Admin)
+  @ApiBearerAuth('JWT-auth')
+  @ApiBody({type:CreateCareervacancyDto})
+  @UseInterceptors(NoFilesInterceptor())
+  @ApiConsumes('multipart/form-data')
+  async create(
+    @Body() createCareervacancyDto: CreateCareervacancyDto,
+    @CurrentUser() Currentuser) {
+     
+     const user = await this.userService.findUser(Currentuser.userId);
+    const data = await this.careervacancyService.create(createCareervacancyDto,user);
+    // delete data.user;
+    delete data.user.password
+    delete data.user.accesstoken
+    delete data.user.id
+    delete data.user.email
 
+    return {
+      status:200,
+      message:'Job posted successfully',
+      job:data
+    }
+  }
   @Patch(':id')
   @ApiBearerAuth('JWT-auth')
-  @Roles(Role.Employer)
+  @Roles(Role.Employer,Role.Admin)
   @UseGuards(AuthGuardJwt,RolesGuard)
   @ApiBody({type:UpdateCareervacancyDto})
   @ApiConsumes('multipart/form-data')
@@ -88,8 +90,10 @@ export class CareervacancyController {
   ) {
       const user = await this.userService.findUser(currentuser.userId);
       const data = await this.careervacancyService.update(+id, updateCareervacancyDto,user);
-      console.log(data);
-      
+      delete data.user.accesstoken      
+      delete data.user.password      
+      delete data.user.email      
+
       return {
         status:200,
         message:'Updated Successfully',
@@ -100,7 +104,7 @@ export class CareervacancyController {
   @Delete(':id')
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
-  @Roles(Role.Employer)
+  @Roles(Role.Employer,Role.Admin)
   async remove(
     @Param('id') id: string,
     @CurrentUser() currentuser

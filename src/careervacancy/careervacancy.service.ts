@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { CareercategoryService } from 'src/careercategory/careercategory.service';
 import { FilterCategoryDto } from './dto/category-filter.dto';
 import { enduser } from 'src/endusers/entities/endusers.entity';
+import { CompanyService } from 'src/company/company.service';
 
 @Injectable()
 export class CareervacancyService {
@@ -14,6 +15,7 @@ export class CareervacancyService {
     @InjectRepository(Careervacancy) private vacancies:Repository<Careervacancy>,
     @InjectRepository(enduser) private enduserRepo:Repository<enduser>,
     private careercategoryService:CareercategoryService,
+    private companyService:CompanyService
 
   ){}
   async create(createCareervacancyDto: CreateCareervacancyDto,user:enduser) {
@@ -23,7 +25,10 @@ export class CareervacancyService {
     if(!category){
       throw new NotAcceptableException('category with given id is not available')
     }
-    
+    const company = await this.companyService.findOne(+createCareervacancyDto.company_id)
+    if(!company){
+      throw new NotAcceptableException('company not found')
+    }
     const vacancy = new Careervacancy();
     vacancy.title = createCareervacancyDto.title;
     vacancy.description = createCareervacancyDto.description
@@ -31,9 +36,10 @@ export class CareervacancyService {
     vacancy.deadline = createCareervacancyDto.deadline
     vacancy.careercategory = category
     vacancy.user = user
+    vacancy.company = company
     const newvacancy = await this.vacancies.save(vacancy);
-    // console.log(newvacancy.user);
-    return newvacancy
+
+    return newvacancy;
     
   }
 
@@ -50,6 +56,7 @@ export class CareervacancyService {
       where:{id:id},
       relations:{careercategory:true,applicants:true}
     })
+    const arr = vacancy.applicants
     if(!vacancy){
       throw new NotFoundException("Applicant Not Found with this id")
  }
@@ -61,7 +68,7 @@ export class CareervacancyService {
       where:{id:id},
         })
     if(!vacancy){
-          throw new NotFoundException("Applicant Not Found with this id")
+          throw new NotFoundException("Vacancy Not Found with this id")
      }
     return vacancy;
   }
@@ -74,15 +81,13 @@ export class CareervacancyService {
       relations:{user:true}
     })
     
-    console.log(vacancy.user);
-    console.log(user);
-    
+
     // console.log(vacancy.user);
     
     if(!vacancy){
       throw new NotFoundException('Vacancy Not Found')
     }
-    if(user!==vacancy.user){
+    if(user.email!=vacancy.user.email){
       throw new ForbiddenException('Forbidden access for further action')
     }
     vacancy.title = updateCareervacancyDto.title

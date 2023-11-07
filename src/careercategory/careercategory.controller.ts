@@ -18,6 +18,23 @@ export class CareercategoryController {
     private readonly careercategoryService: CareercategoryService,
     private readonly userService:EndusersService) {}
 
+    @Get()
+    async findAll() {
+      const [category,count]= await  this.careercategoryService.findAll();
+  
+      return {
+        status:200,
+        category:category,
+        total:count
+      }
+    }
+  
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+      return await this.careercategoryService.findOneWithVacancy(+id);
+    }
+
+
   @Post()
   @UseGuards(AuthGuardJwt,RolesGuard)
   @Roles(Role.Admin)
@@ -35,24 +52,11 @@ export class CareercategoryController {
     }
   }
 
-  @Get()
-  async findAll() {
-    const [category,count]= await  this.careercategoryService.findAll();
-
-    return {
-      status:200,
-      category:category,
-      total:count
-    }
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.careercategoryService.findOneWithVacancy(+id);
-  }
+  
 
   @Patch(':id')
-  @UseGuards(AuthGuardJwt)
+  @UseGuards(AuthGuardJwt,RolesGuard)
+  @Roles(Role.Admin)
   @ApiBearerAuth('JWT-auth')
   @ApiBody({type:UpdateCareercategoryDto})
   @ApiConsumes('multipart/form-data')
@@ -70,7 +74,8 @@ export class CareercategoryController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuardJwt)
+  @UseGuards(AuthGuardJwt,RolesGuard)
+  @Roles(Role.Admin)
   @ApiBearerAuth('JWT-auth')
   async remove(
   @Param('id') id: string,

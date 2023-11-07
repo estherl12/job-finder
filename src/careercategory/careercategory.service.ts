@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { Careercategory } from './entities/careercategory.entity';
 import { NotFoundError } from 'rxjs';
 import { enduser } from 'src/endusers/entities/endusers.entity';
+import { Role } from 'src/auth/enum/role.enum';
 
 @Injectable()
 export class CareercategoryService {
@@ -46,13 +47,16 @@ export class CareercategoryService {
   }
 
   async update(id: number, updateCareercategoryDto: UpdateCareercategoryDto,user:enduser) {
-    const category = await this.careerCategoryRepo.findOne({where:{id:id},relations:{user:true}},)
+    const category = await this.careerCategoryRepo.findOne({where:{id:id}})
    
-    if(category.user.id!=user.id){  //in js, object equality done through reference so
-      throw new ForbiddenException("forbidden to update")
-    }
+   if(user.role!=Role.Admin){
+    throw new ForbiddenException("forbidden to update");
+  }
+    // if(category.user.email!=user.email){  //in js, object equality done through reference so
+    //   throw new ForbiddenException("forbidden to update")
+    // }
    category.sector = updateCareercategoryDto.sector
-    return await this.careerCategoryRepo.save(category);
+    return await this.careerCategoryRepo.save({...category,...updateCareercategoryDto});
   }
 
   async remove(id: number,user:enduser) {
@@ -60,7 +64,10 @@ export class CareercategoryService {
    if(!category){
     throw new NotAcceptableException('category not found')
    }
-    if(category.user.id!=user.id){ 
+    // if(category.user.email!=user.email){ 
+    //   throw new ForbiddenException("forbidden to update");
+    // }
+    if(user.role!=Role.Admin){
       throw new ForbiddenException("forbidden to update");
     }
     return await this.careerCategoryRepo.delete(id);

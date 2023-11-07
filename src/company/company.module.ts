@@ -8,8 +8,9 @@ import { EndusersModule } from 'src/endusers/endusers.module';
 import { EndusersService } from 'src/endusers/endusers.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Company])],
-  providers: [CompanyService, Company],
+  imports: [
+    TypeOrmModule.forFeature([Company])],
+  providers: [CompanyService],
   controllers: [CompanyController],
   exports: [CompanyService],
 })

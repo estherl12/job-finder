@@ -30,7 +30,7 @@ import { Role } from 'src/auth/enum/role.enum';
 import { CurrentUser } from 'src/auth/decorator/currentuser.decorator';
 import { EndusersService } from 'src/endusers/endusers.service';
 const MAX_CV_SIZE_IN_BYTES = 2 * 1024 * 1024;
-const VALID_UPLOADS_MIME_TYPES = ['image/png', 'pdf', 'image/jpeg'];
+const VALID_UPLOADS_MIME_TYPES = ['image/png', 'application/pdf', 'image/jpeg'];
 
 @ApiTags('Carreer-Applications')
 @Controller('applications')
@@ -42,10 +42,28 @@ export class CareerapplicationsController {
     private readonly userService:EndusersService
   ) {}
 
+  @Get()
+  async findAll() {
+    const [applicant,count] = await this.applicationService.findAll();
+    return {
+      applicants:applicant,
+      total:count
+    }
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const data = await this.applicationService.findOne(+id);
+    return {
+      status:200,
+      applicant : data
+    }
+  }
+
   @Post()
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
-  @Roles(Role.Applicant)
+  @Roles(Role.Applicant,Role.Admin)
   @ApiBody({ type: CreateCareerapplicationDto })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
@@ -58,10 +76,12 @@ export class CareerapplicationsController {
           callback(null, filename);
         },
       }),
-    }),
+    }
+    )
   )
   async create(
     @Body() createCareerapplicationDto: CreateCareerapplicationDto,
+    @CurrentUser() currentuser,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addValidator(
@@ -78,7 +98,12 @@ export class CareerapplicationsController {
     file: Express.Multer.File,
   ) {
     createCareerapplicationDto.file = `${this.SERVER_URL}${file.filename}`;
-    const data = await this.applicationService.create(createCareerapplicationDto);
+    const user = await this.userService.findUser(currentuser.userId)
+
+    const data = await this.applicationService.create(createCareerapplicationDto,user);
+    delete data.user.accesstoken
+    delete data.user.email
+    delete data.user.password
     return {
       status:200,
       message:'Your CV submitted successfully for this job.',
@@ -87,28 +112,12 @@ export class CareerapplicationsController {
   }
 
 
-  @Get()
-  async findAll() {
-    const [applicant,count] = await this.applicationService.findAll();
-    return {
-      applicants:applicant,
-      total:count
-    }
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const applicant = await this.applicationService.findOne(+id);
-    return {
-      status:200,
-      applicant : applicant
-    }
-  }
+ 
 
   @Patch(':id')
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
-  @Roles(Role.Applicant)
+  @Roles(Role.Applicant,Role.Admin)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -139,9 +148,19 @@ export class CareerapplicationsController {
     file: Express.Multer.File,
     @CurrentUser() currentuser,
   ) {
-    const user = await this.userService.findUser(currentuser.userId)
+    
+    const user = await this.userService.findUser(currentuser.userId)    
     updateCareerapplicationDto.file = `${this.SERVER_URL}${file.filename}`
     const data= await this.applicationService.update(+id,  updateCareerapplicationDto,user  );
+    delete data.user.accesstoken
+    delete data.user.email
+    delete data.user.password
+
+    delete data.vacancy.description
+    delete data.vacancy.requirement
+    delete data.vacancy.id
+
+    // delete data.user.
     return {
       status:200,
       message:'applicant detail updated successfully',
@@ -152,7 +171,7 @@ export class CareerapplicationsController {
   @Delete(':id')
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
-  @Roles(Role.Applicant)
+  @Roles(Role.Applicant,Role.Admin)
   async remove(@Param('id') id: string,@CurrentUser() currentuser) {
     const user = await this.userService.findUser(currentuser.userId)
     const data = await this.applicationService.remove(+id,user);

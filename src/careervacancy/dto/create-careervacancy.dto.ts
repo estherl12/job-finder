@@ -17,4 +17,7 @@ export class CreateCareervacancyDto {
     @ApiProperty({description:'careercategory_id',type:String})
     careercategory_id:string
 
+    @ApiProperty({description:'company_id',type:String})
+    company_id:string
+
 }

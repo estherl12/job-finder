@@ -1,5 +1,6 @@
 import { Careerapplication } from "src/careerapplications/entities/careerapplication.entity";
 import { Careercategory } from "src/careercategory/entities/careercategory.entity";
+import { Company } from "src/company/entities/company.entity";
 import { enduser } from "src/endusers/entities/endusers.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -24,8 +25,7 @@ export class Careervacancy {
     applicants:Careerapplication
 
     @ManyToOne(()=>Careercategory,(careercategory)=>careercategory.vacancy,{
-        // cascade:['insert','update','remove'],
-        onDelete:'CASCADE',
+        onDelete:'SET NULL',
         onUpdate:'CASCADE'
     })
     @JoinColumn({name:'careercategory_id'})
@@ -38,4 +38,9 @@ export class Careervacancy {
     @JoinColumn({name:'user_id'})
     user:enduser
 
+    @ManyToOne(()=>Company,(company)=>company.vacancy,{
+        onDelete:'SET NULL',onUpdate:'CASCADE'
+    })
+    @JoinColumn({name:'company_id'})
+    company:Company
 }
