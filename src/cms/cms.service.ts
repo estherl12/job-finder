@@ -4,6 +4,8 @@ import { UpdateCmDto } from './dto/update-cm.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Cms } from './entities/cm.entity';
 import { DataSource, Repository } from 'typeorm';
+import { Observable, from } from 'rxjs';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CmsService {
@@ -64,6 +66,20 @@ export class CmsService {
 
     const data = await this.cmsRepository.save(cms);
     return data;
+  }
+  // findWithPagination(take:number = 10,skip:number = 0):Observable<Cms[]>{
+  //  return from( this.cmsRepository.findAndCount({take,skip}).then(([cmsDetails])=>{
+  //     return <Cms[]>cmsDetails ;
+  //   })
+  //   );
+  // }
+
+  async paginate(options:IPaginationOptions):Promise<Pagination<Cms>>{
+    const querybuilder = await this.cmsRepository
+      .createQueryBuilder('cms')
+      .where('cms.parent_id is null')
+
+    return paginate<Cms>(querybuilder,options)  //method from package which takes select querybuilder and options
   }
 
   async remove(id: number) {

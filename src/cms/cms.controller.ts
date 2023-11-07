@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
 import { CmsService } from './cms.service';
 import { CreateCmDto } from './dto/create-cm.dto';
 import { UpdateCmDto } from './dto/update-cm.dto';
@@ -7,6 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import { FileInterceptor, NoFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { skip } from 'node:test';
 
 @ApiTags('CMS')
 @Controller('cms')
@@ -28,23 +29,57 @@ export class CmsController {
     })
   }
   ))
-  create(
+  async create(
     @Body() createCmDto: CreateCmDto,
     @UploadedFile() image:Express.Multer.File
     ) {
     createCmDto.image = `${this.SERVER_URL}${image.filename}`
-    return this.cmsService.create(createCmDto);
+    const data = await this.cmsService.create(createCmDto);
+    return {
+      message:'cms page created successfully',
+      cmsDetail:data
+    }
   }
 
-  @Get()
-  async findAll() {
-    return await this.cmsService.findAll();
+  // @Get()
+  // async findAll() {
+  //   const data = await this.cmsService.findAll();
+  //   return {
+  //     message:'cms page fetched successfully',
+  //     cmsDetails:data
+  //   }
+  // }
+
+  @Get('')
+  async index(
+    @Query('page',new DefaultValuePipe(1),ParseIntPipe) page:number = 1,
+    @Query('limit',new DefaultValuePipe(10),ParseIntPipe) limit:number=10
+  ){
+    limit = limit>15?15:limit
+    return this.cmsService.paginate({
+      page,
+      limit,
+      // route:'http://localhost:3005/blogapi#/CMS/CmsController_findOne'
+    })
   }
 
   @Get(':id')
-  findOne(@Param('id') id:number) {
-    return this.cmsService.findOne(+id);
+  async findOne(@Param('id') id:number) {
+    const data = await this.cmsService.findOne(+id);
+    return {
+      message:'data fetched successfully',
+      cmsDetails:data
+    }
   }
+
+  // @Get()
+  // async findWithPagination(
+  //   @Query('take') take:number = 1,
+  //   @Query('skip')  skip:number = 1
+  // ){
+  //   take = take>20?20:take ;
+  //   return this.cmsService.findWithPagination(take,skip)
+  // }
 
   @Patch(':id')
   @ApiConsumes('multipart/form-data')

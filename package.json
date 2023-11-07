@@ -37,6 +37,7 @@
     "file-type": "^18.5.0",
     "file-type-mime": "^0.2.0",
     "mysql2": "^3.6.1",
+    "nestjs-typeorm-paginate": "^4.0.4",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
