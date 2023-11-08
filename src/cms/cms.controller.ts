@@ -1,13 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, ParseIntPipe, DefaultValuePipe, UseGuards } from '@nestjs/common';
 import { CmsService } from './cms.service';
 import { CreateCmDto } from './dto/create-cm.dto';
 import { UpdateCmDto } from './dto/update-cm.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import {v4 as uuidv4} from 'uuid';
 import { FileInterceptor, NoFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { skip } from 'node:test';
+import { AuthGuardJwt } from 'src/@guards/jwt-auth-guard';
+import { RolesGuard } from 'src/@guards/roles.guard';
+import { Role } from 'src/auth/enum/role.enum';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @ApiTags('CMS')
 @Controller('cms')
@@ -16,6 +20,9 @@ export class CmsController {
   SERVER_URL = 'http://localhost:3005/';
 
   @Post()
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuardJwt,RolesGuard)
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @ApiBody({type:CreateCmDto})
   @UseInterceptors(FileInterceptor('image',{
@@ -51,6 +58,8 @@ export class CmsController {
   // }
 
   @Get('')
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   async index(
     @Query('page',new DefaultValuePipe(1),ParseIntPipe) page:number = 1,
     @Query('limit',new DefaultValuePipe(10),ParseIntPipe) limit:number=10
@@ -82,6 +91,9 @@ export class CmsController {
   // }
 
   @Patch(':id')
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuardJwt,RolesGuard)
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @ApiBody({type:UpdateCmDto})
   @UseInterceptors(FileInterceptor('image',{
@@ -105,6 +117,9 @@ export class CmsController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(AuthGuardJwt,RolesGuard)
+  @Roles(Role.Admin)
   async remove(@Param('id') id: string) {
     const data = await this.cmsService.remove(+id);
     return {
