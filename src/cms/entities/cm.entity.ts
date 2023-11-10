@@ -18,7 +18,7 @@ export class Cms {
     metadescription:string
 
     @OneToMany(()=>Cms,(cms)=>cms.parent)
-    // @JoinColumn({name:'parent_id'})
+    // @JoinColumn({name:'child_id'})
     children:Cms[]
 
     @ManyToOne(()=>Cms,(cms)=>cms.children,{nullable:true,onDelete:'SET NULL',onUpdate:'CASCADE'},)

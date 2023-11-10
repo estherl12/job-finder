@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, ParseIntPipe, DefaultValuePipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, ParseIntPipe, DefaultValuePipe, UseGuards, Request } from '@nestjs/common';
 import { CmsService } from './cms.service';
 import { CreateCmDto } from './dto/create-cm.dto';
 import { UpdateCmDto } from './dto/update-cm.dto';
@@ -23,8 +23,8 @@ export class CmsController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
   @Roles(Role.Admin)
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({type:CreateCmDto})
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({type:CreateCmDto})
   @UseInterceptors(FileInterceptor('image',{
     storage:diskStorage({
       destination:'./files',
@@ -40,8 +40,16 @@ export class CmsController {
     @Body() createCmDto: CreateCmDto,
     @UploadedFile() image:Express.Multer.File
     ) {
-    createCmDto.image = `${this.SERVER_URL}${image.filename}`
+
+      // if(image){
+      //   createCmDto.image = `${this.SERVER_URL}${image.filename}`;
+      // }else{
+  
+      //   createCmDto.image = `${this.SERVER_URL}${createCmDto.image}`;
+      // }
+    
     const data = await this.cmsService.create(createCmDto);
+    // data.children.map((item)=>this.cmsService.create(item));
     return {
       message:'cms page created successfully',
       cmsDetail:data
@@ -57,6 +65,8 @@ export class CmsController {
   //   }
   // }
 
+
+
   @Get('')
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -65,12 +75,13 @@ export class CmsController {
     @Query('limit',new DefaultValuePipe(10),ParseIntPipe) limit:number=10
   ){
     limit = limit>15?15:limit
-    return this.cmsService.paginate({
+    return{
+      cmsDetails:await  this.cmsService.paginate({
       page,
       limit,
       // route:'http://localhost:3005/blogapi#/CMS/CmsController_findOne'
     })
-  }
+  }}
 
   @Get(':id')
   async findOne(@Param('id') id:number) {
@@ -94,8 +105,8 @@ export class CmsController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
   @Roles(Role.Admin)
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({type:UpdateCmDto})
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({type:UpdateCmDto})
   @UseInterceptors(FileInterceptor('image',{
     storage:diskStorage({
       destination:'./files',
@@ -108,7 +119,13 @@ export class CmsController {
   }
   ))
   async update(@Param('id') id: number, @Body() updateCmDto: UpdateCmDto,@UploadedFile() image:Express.Multer.File) {
-    updateCmDto.image = `${this.SERVER_URL}${image.filename}`
+    // updateCmDto.image = `${this.SERVER_URL}${image.filename}`
+    if(image){
+      updateCmDto.image = `${this.SERVER_URL}${image.filename}`;
+    }else{
+      updateCmDto.image = `${this.SERVER_URL}${updateCmDto.image}`;
+    }
+  
     const data = await this.cmsService.update(+id, updateCmDto);
     return {
       message:'Updated successfully',
