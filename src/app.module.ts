@@ -29,6 +29,10 @@ import { CmsModule } from './cms/cms.module';
 import { Cms } from './cms/entities/cm.entity';
 import { Image } from './images/entities/image.entity';
 import { ImagesModule } from './images/images.module';
+import { ServiceModule } from './service/service.module';
+import { ServiceCategoryModule } from './service-category/service-category.module';
+import { Service } from './service/entities/service.entity';
+import { ServiceCategory } from './service-category/entities/service-category.entity';
 
 @Module({
   imports: [
@@ -50,7 +54,9 @@ import { ImagesModule } from './images/images.module';
         Careerapplication,
         Company,
         Cms,
-        Image
+        Image,
+        Service,
+        ServiceCategory
       ],
       synchronize: true,
       autoLoadEntities: true, // every entity registered through the forFeature() method will be automatically added to the entities array of the configuration object.
@@ -72,6 +78,8 @@ import { ImagesModule } from './images/images.module';
     CompanyModule,
     CmsModule,
     ImagesModule,
+    ServiceModule,
+    ServiceCategoryModule,
     
   ],
   controllers: [AppController],

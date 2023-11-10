@@ -21,7 +21,7 @@ export class Cms {
     // @JoinColumn({name:'child_id'})
     children:Cms[]
 
-    @ManyToOne(()=>Cms,(cms)=>cms.children,{nullable:true,onDelete:'SET NULL',onUpdate:'CASCADE'},)
+    @ManyToOne(()=>Cms,(cms)=>cms.children,{nullable:true,onDelete:'CASCADE',onUpdate:'CASCADE'},)
     @JoinColumn({name:'parent_id'})
     parent:Cms
 }
