@@ -29,7 +29,7 @@ export class ServiceCategoryController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const data = await this.serviceCategoryService.findOne(+id);
+    const data = await this.serviceCategoryService.findWithServices(+id);
     return {
       message:"Data fetched successfully",
       data:data

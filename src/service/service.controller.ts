@@ -57,8 +57,8 @@ export class ServiceController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const data = await this.serviceService.remove(+id);
+  async remove(@Param('id') id: number) {
+    const data = await this.serviceService.remove(id);
     return {
       message: 'deleted successfully',
     };
