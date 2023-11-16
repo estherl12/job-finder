@@ -11,17 +11,17 @@ export class ImagesService {
   async create(createImageDto: CreateImageDto) {
     const Newimage = new Image();
     Newimage.image = createImageDto.image
-    Newimage.category = createImageDto.category
+    // Newimage.category = createImageDto.category
 
     return await this.Images.save(Newimage)
   }
 
-  findAll() {
-    return `This action returns all images`;
+  async findAll() {
+    return await this.Images.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} image`;
+  async findOne(id: number) {
+    return await this.Images.findOne({where:{id:id}})
   }
 
   update(id: number, updateImageDto: UpdateImageDto) {

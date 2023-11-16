@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, ParseIntPipe, DefaultValuePipe, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Query, ParseIntPipe, DefaultValuePipe, UseGuards, Request, ValidationPipe } from '@nestjs/common';
 import { CmsService } from './cms.service';
 import { CreateCmDto } from './dto/create-cm.dto';
 import { UpdateCmDto } from './dto/update-cm.dto';
@@ -37,7 +37,7 @@ export class CmsController {
   }
   ))
   async create(
-    @Body() createCmDto: CreateCmDto,
+    @Body(ValidationPipe) createCmDto: CreateCmDto,
     @UploadedFile() image:Express.Multer.File
     ) {
 
@@ -118,7 +118,7 @@ export class CmsController {
     })
   }
   ))
-  async update(@Param('id') id: number, @Body() updateCmDto: UpdateCmDto,@UploadedFile() image:Express.Multer.File) {
+  async update(@Param('id') id: number, @Body(ValidationPipe) updateCmDto: UpdateCmDto,@UploadedFile() image:Express.Multer.File) {
     // updateCmDto.image = `${this.SERVER_URL}${image.filename}`
     if(image){
       updateCmDto.image = `${this.SERVER_URL}${image.filename}`;

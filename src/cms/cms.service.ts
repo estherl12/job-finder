@@ -23,12 +23,15 @@ export class CmsService {
    cms.image = createCmDto.image
   //  cms.children = createCmDto.children
   const data = await this.cmsRepository.save(cms);
-  if(createCmDto.children){ 
-      const child = createCmDto.children.map((child)=>child.parent = data)
-      const childs= createCmDto.children.map((item)=>this.cmsRepository.save(item));
+    if(createCmDto.children){ 
+      const child = createCmDto.children.map(async (child)=> child.parent = data)
+      const childs= createCmDto.children.map(async (item)=> await this.cmsRepository.save(item));
     }
       
- return data;
+//  const CMS =  await this.cmsRepository.findOne({where:{id:data.id},relations:{children:true}});
+//  return CMS;
+  // return await this.cmsRepository.findOne({where:{id:data.id},relations:{children:true}});
+  return data;
   }
 
   async findAll() {
@@ -45,7 +48,7 @@ export class CmsService {
     //             .where('cms.parent_id =:parent_id',{parent_id:null})
     //             .getMany()
 
-      return cms;
+      return  cms;
   }
 
   async findOne(id: number) {

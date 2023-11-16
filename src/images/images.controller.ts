@@ -56,13 +56,13 @@ export class ImagesController {
 
 
   @Get()
-  findAll() {
-    return this.imagesService.findAll();
+  async findAll() {
+    return await this.imagesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.imagesService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.imagesService.findOne(+id);
   }
 
   // @Patch(':id')

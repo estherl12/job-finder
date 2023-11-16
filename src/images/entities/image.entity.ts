@@ -8,6 +8,6 @@ export class Image {
     @Column()
     image:string
 
-    @Column()
-    category:string
+    // @Column()
+    // category:string
 }
