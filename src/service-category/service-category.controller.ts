@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpSt
 import { ServiceCategoryService } from './service-category.service';
 import { CreateServiceCategoryDto } from './dto/create-service-category.dto';
 import { UpdateServiceCategoryDto } from './dto/update-service-category.dto';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { AuthGuardJwt } from 'src/@guards/jwt-auth-guard';
 import { RolesGuard } from 'src/@guards/roles.guard';
 import { Roles } from 'src/auth/decorator/roles.decorator';
@@ -17,6 +17,12 @@ export class ServiceCategoryController {
   @UseGuards(AuthGuardJwt,RolesGuard)
   @Roles(Role.Admin)
   @Post()
+  @ApiExtraModels(CreateServiceCategoryDto) // for CatDto to be found by getSchemaPath()
+//  @ApiResponse({
+//   schema: {
+  
+//   }
+// })
   @ApiBody({type:CreateServiceCategoryDto})
   async create(@Body(ValidationPipe) createServiceCategoryDto: CreateServiceCategoryDto) {
     const category = await this.serviceCategoryService.create(createServiceCategoryDto);

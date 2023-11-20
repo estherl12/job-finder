@@ -35,23 +35,51 @@ export class ServiceService {
   async findOne(id: number) {
     const service = await this.serviceRepo.findOne({
       where: { id: id },
-      relations: { servicecategory: true },
+      relations: { servicecategory: true ,review:true,booking:true,gallery:true},
     });
     if(!service){
       throw new NotFoundException("Service not found!")
     }
-    return service
+    return service;
+  }
+  async findById(id:number){
+    const service = await this.serviceRepo.findOne({where:{id:id},relations:{review:true}});
+    
+    return service ;
   }
 
   async update(id: number, updateServiceDto: UpdateServiceDto) {
+    const category = await this.categoryServices.findOne(
+      updateServiceDto.servicecategory_id,
+    );
     const service = await this.serviceRepo.findOne({ where: { id: id } });
     if(!service){
       throw new NotFoundException("Service not found!")
     }
-    return Object.assign(service, updateServiceDto);
+
+    service.title = updateServiceDto.title;
+    service.description = updateServiceDto.description;
+    service.image = updateServiceDto.image;
+    service.shortDescription = updateServiceDto.shortDescription;
+    service.servicecategory = category;
+    
+    return await this.serviceRepo.save(service)
   }
 
+  async updateForRate(id:number,rate:number){
+    const service = await this.serviceRepo.findOne({ where: { id: id } });
+    if(!service){
+      throw new NotFoundException("Service not found!")
+    }
+    service.averagerate = rate
+    return await this.serviceRepo.save(service)
+  }
+  
   async remove(id: number) {
+    const service = await this.serviceRepo.findOne({ where: { id: id } });
+    if(!service){
+      throw new NotFoundException("Service not found!")
+    }
     return await this.serviceRepo.delete(id);
   }
 }

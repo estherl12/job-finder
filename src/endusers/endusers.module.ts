@@ -10,10 +10,11 @@ import { CompanyModule } from 'src/company/company.module';
 import { CompanyService } from 'src/company/company.service';
 import { Company } from 'src/company/entities/company.entity';
 import { CareercategoryModule } from 'src/careercategory/careercategory.module';
+import { Review } from 'src/review/entities/review.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([enduser, Company]),
+    TypeOrmModule.forFeature([enduser, Company,Review]),
     // forwardRef(() => CompanyModule),
     // forwardRef(() =>CareercategoryModule ),
     AuthModule,

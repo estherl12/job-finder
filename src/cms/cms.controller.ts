@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Upl
 import { CmsService } from './cms.service';
 import { CreateCmDto } from './dto/create-cm.dto';
 import { UpdateCmDto } from './dto/update-cm.dto';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiExtraModels, ApiQuery, ApiTags } from '@nestjs/swagger';
 import {v4 as uuidv4} from 'uuid';
 import { FileInterceptor, NoFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -23,6 +23,7 @@ export class CmsController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuardJwt,RolesGuard)
   @Roles(Role.Admin)
+  @ApiExtraModels(CreateCmDto)
   // @ApiConsumes('multipart/form-data')
   // @ApiBody({type:CreateCmDto})
   @UseInterceptors(FileInterceptor('image',{

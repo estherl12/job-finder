@@ -7,6 +7,8 @@ import { Careervacancy } from "src/careervacancy/entities/careervacancy.entity";
 import { Careercategory } from "src/careercategory/entities/careercategory.entity";
 import { Careerapplication } from "src/careerapplications/entities/careerapplication.entity";
 import { Company } from "src/company/entities/company.entity";
+import { Review } from "src/review/entities/review.entity";
+import { ServiceBooking } from "src/service-booking/entities/service-booking.entity";
 
 @Exclude()
 @Entity()
@@ -58,4 +60,10 @@ export class enduser{
     // @OneToMany(()=>Company,(company)=>company.employer,{nullable:true})
     // @JoinColumn({name:'company_id'})
     // company:Company
+
+    @OneToMany(()=>Review,(review)=>review.user)
+    review:Review
+
+    @OneToMany(()=>ServiceBooking,(booking)=>booking.user)
+    booking:ServiceBooking
 }

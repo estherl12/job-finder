@@ -31,6 +31,7 @@ export class GetBlogSerializer {
   @Expose()
   @Type(() => Comments)
   data: Comments;
+  
   @Expose()
   total:number
 }

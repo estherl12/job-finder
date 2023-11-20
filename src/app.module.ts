@@ -33,6 +33,9 @@ import { ServiceModule } from './service/service.module';
 import { ServiceCategoryModule } from './service-category/service-category.module';
 import { Service } from './service/entities/service.entity';
 import { ServiceCategory } from './service-category/entities/service-category.entity';
+import { ServiceBookingModule } from './service-booking/service-booking.module';
+import { ReviewModule } from './review/review.module';
+import { ServiceGalleryModule } from './service-gallery/service-gallery.module';
 
 @Module({
   imports: [
@@ -80,6 +83,9 @@ import { ServiceCategory } from './service-category/entities/service-category.en
     ImagesModule,
     ServiceModule,
     ServiceCategoryModule,
+    ServiceBookingModule,
+    ReviewModule,
+    ServiceGalleryModule,
     
   ],
   controllers: [AppController],
