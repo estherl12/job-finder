@@ -8,6 +8,7 @@ import { Service } from 'src/service/entities/service.entity';
 import { ServiceModule } from 'src/service/service.module';
 import { enduser } from 'src/endusers/entities/endusers.entity';
 import { EndusersModule } from 'src/endusers/endusers.module';
+import { EndusersService } from 'src/endusers/endusers.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([Review,Service,enduser]),ServiceModule,EndusersModule],

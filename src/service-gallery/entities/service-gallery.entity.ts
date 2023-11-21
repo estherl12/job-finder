@@ -12,7 +12,7 @@ export class ServiceGallery {
     @Column()
     image:string
 
-    @ManyToOne(()=>Service,(service)=>service.gallery)
+    @ManyToOne(()=>Service,(service)=>service.gallery,{onDelete:'CASCADE',onUpdate:'CASCADE'})
     @JoinColumn({name:'service_id'})
     service:Service
 }

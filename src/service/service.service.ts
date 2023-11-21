@@ -40,10 +40,12 @@ export class ServiceService {
     if(!service){
       throw new NotFoundException("Service not found!")
     }
+    // console.log(service.revie);
+    
     return service;
   }
   async findById(id:number){
-    const service = await this.serviceRepo.findOne({where:{id:id},relations:{review:true}});
+    const service = await this.serviceRepo.findOne({where:{id:id}});
     
     return service ;
   }

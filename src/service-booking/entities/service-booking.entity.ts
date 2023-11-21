@@ -22,7 +22,7 @@ export class ServiceBooking {
     @Column()
     message:string;
 
-    @ManyToOne(()=>Service,(service)=>service.booking)
+    @ManyToOne(()=>Service,(service)=>service.booking,{onDelete:'CASCADE',onUpdate:'CASCADE'})
     @JoinColumn({name:'service_id'})
     service:Service
 

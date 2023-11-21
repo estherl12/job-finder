@@ -82,11 +82,14 @@ export class BlogController {
 
   @Get(':id')
   @ApiConsumes('multipart/form-data')
+
   async findOneblog(@Param('id') id: string) {
     const blogFromRepo = await this.blogService.findOne(Number(id));
     if(!blogFromRepo){
       throw new BadRequestException("No blog found with given id")
     }
+    // console.log(blogFromRepo.comments);
+    
     return plainToClass(
       blogSerializer,
       {

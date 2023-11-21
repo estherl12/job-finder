@@ -2,7 +2,7 @@ import { Review } from "src/review/entities/review.entity";
 import { ServiceBooking } from "src/service-booking/entities/service-booking.entity";
 import { ServiceCategory } from "src/service-category/entities/service-category.entity";
 import { ServiceGallery } from "src/service-gallery/entities/service-gallery.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Double, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Service {
@@ -32,7 +32,7 @@ servicecategory:ServiceCategory
 review:Review[]
 
 @OneToMany(()=>ServiceBooking,(booking)=>booking.service)
-booking:ServiceBooking
+booking:ServiceBooking[]
 
 @OneToMany(()=>ServiceGallery,(gallery)=>gallery.service)
 gallery:ServiceGallery[]

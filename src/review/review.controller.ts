@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -24,7 +24,8 @@ export class ReviewController {
   async create(
     @Body() createReviewDto: CreateReviewDto,
     @CurrentUser() currentuser) {
-    const user = await this.userService.findUser(currentuser.userId)      
+      
+    const user = await this.userService.findUser(currentuser.userId) ;     
     const review = await this.reviewService.create(createReviewDto,user);
     delete review.user.password
     delete review.user.email
@@ -46,16 +47,23 @@ export class ReviewController {
   @Get()
   async findAll() {
     const reviews = await this.reviewService.findAll();
+    
     return plainToClass(GetReviewSerializer,{
         data:reviews
       },
       {strategy:'excludeAll'})
-    
+    // return {
+    //   message:"data fetched successfully",
+    //   data:reviews
+    // };
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const data  = await this.reviewService.findOne(+id);
+  async findOne(@Param('id',ParseIntPipe) id: number) {
+    const data  = await this.reviewService.findOne(id);
+    delete data.user.password;
+    delete data.user.accesstoken
+    delete data.user.mobile;
     return {
       message:"Data fetched successfully",
       data:data

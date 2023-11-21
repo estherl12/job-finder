@@ -5,8 +5,6 @@ class Blog {
   id: number;
 }
 class User {
-  @Expose()
-  id: number;
 
   @Expose()
   name: string;

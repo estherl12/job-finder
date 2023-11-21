@@ -38,17 +38,26 @@ export class ReviewService {
     const averageRate = rate/ratesLength
     service.averagerate = parseFloat(`${averageRate}`)
     
-    const updated = await this.serviceServices.updateForRate(createReviewDto.service_id,service.averagerate);
+    await this.serviceServices.updateForRate(createReviewDto.service_id,service.averagerate);
     return newReview;
   }
 
   async findAll() {
 
-   return await this.reviewRepository.find();
+   const reviews=  await this.reviewRepository.find({relations:{user:true}});
+   if(!reviews){
+      throw new NotFoundException("No reviews yet")
+   }
+   return reviews;
   }
 
  async findOne(id: number) {
-    return await this.reviewRepository.findOne({where:{id:id},relations:{service:true,user:true}})
+  
+    const review =  await this.reviewRepository.findOne({where:{id:id},relations:{service:true,user:true}});
+    if(!review){
+      throw new NotFoundException("Review Not found")
+    }
+    return review;
   }
 
   async update(id: number, updateReviewDto: UpdateReviewDto,user:enduser) {
@@ -79,10 +88,14 @@ export class ReviewService {
   }
 
   async remove(id: number,user:enduser) {
-    const review = await this.reviewRepository.findOne({where:{id:id}})
-    if(review.user.email!=user.email){
-      throw new ForbiddenException("You are forbidden for this action")
-    }
+
+    const review = await this.reviewRepository.findOne({where:{id:id},relations:{user:true}})
+    console.log(user.email);
+    // console.log(review.user.email)
+    
+    // if(review.user.email!=user.email){
+    //   throw new ForbiddenException("You are forbidden for this action")
+    // }
     return await this.reviewRepository.delete(id);
   }
 }

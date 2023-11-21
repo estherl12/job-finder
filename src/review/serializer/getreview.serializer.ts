@@ -9,8 +9,8 @@ class Service {
 }
 
 class User{
-    @Expose()
-    id:number
+    // @Expose()
+    // id:number
 
     @Expose()
     name:string

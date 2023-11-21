@@ -18,7 +18,9 @@ export interface CustomUploadTypeValidatorOptions {
     fileType: string[];
   }
   export class CustomFileTypeValidator extends FileValidator {
+
     private _allowedMimeType: string[];
+
     constructor(
       protected readonly validationOptions: CustomUploadTypeValidatorOptions,
     ) {

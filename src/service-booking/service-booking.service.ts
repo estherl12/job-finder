@@ -27,11 +27,19 @@ export class ServiceBookingService {
   }
 
   async findAll() {
-    return await this.serviceBooking.find();
+    const bookings =  await this.serviceBooking.find();
+    if(!bookings){
+      throw new NotFoundException("Booking not fond")
+    }
+    return bookings;
   }
 
   async findOne(id: number) {
-    return await this.serviceBooking.findOne({where:{id:id},relations:{service:true}})
+    const booking = await this.serviceBooking.findOne({where:{id:id},relations:{service:true}})
+    if(!booking){
+      throw new NotFoundException("Booking not fond")
+    }
+    return booking;
   }
 
   async update(id: number, updateServiceBookingDto: UpdateServiceBookingDto,user:enduser) {

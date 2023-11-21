@@ -9,14 +9,14 @@ import {v4 as uuidv4} from 'uuid';
 import { extname } from 'path';
 import { multerDiskStorage, pngFileFilter } from './FileValidator/file.validator';
 const VALID_UPLOADS_MIME_TYPES = ['image/png', 'application/pdf', 'image/jpeg'];
-const   SERVER_URL = 'http://localhost:3005/';
 
 
 @ApiTags('Service-gallery')
 @Controller('service-gallery')
 export class ServiceGalleryController {
+  SERVER_URL = 'http://localhost:3005/';
   constructor(private readonly serviceGalleryService: ServiceGalleryService) {}
-
+  
   // @ApiBody({type:CreateServiceGalleryDto})
   // @ApiConsumes('multipart/form-data')
   // @Post()
@@ -29,7 +29,7 @@ export class ServiceGalleryController {
   //       callback(null, filename);
   //     }
   //   }),
-  //   // fileFilter:pngFileFilter
+    // fileFilter:pngFileFilter
   // }))
   // async create(
   //   @Body() createServiceGalleryDto: CreateServiceGalleryDto,
@@ -52,8 +52,8 @@ export class ServiceGalleryController {
     storage:multerDiskStorage
   }))
  async create( @Body() createServiceGalleryDto: CreateServiceGalleryDto,
-   @UploadedFile() image:Express.Multer.File){
-    createServiceGalleryDto.image = `${SERVER_URL}${image.path}`
+ @UploadedFile() image:Express.Multer.File){
+     createServiceGalleryDto.image = `${this.SERVER_URL}${image.path}`
     const data = await this.serviceGalleryService.create(createServiceGalleryDto);
     return {
       message:"image uploaded successfully",
@@ -89,7 +89,8 @@ export class ServiceGalleryController {
   @Body() updateServiceGalleryDto: UpdateServiceGalleryDto,
   @UploadedFile() image?:Express.Multer.File) {
 
-    updateServiceGalleryDto.image = `${SERVER_URL}${image.path}`
+    updateServiceGalleryDto.image = `${this.SERVER_URL}${image.path}`
+    
     return await this.serviceGalleryService.update(id, updateServiceGalleryDto);
   }
 

@@ -52,12 +52,13 @@ import { Expose, Type } from "class-transformer";
     @Expose()
     message:string;
 
-    @Expose()
     @Type(()=>User)
+    @Expose()
     user:User;
 
 }
 class ServiceGallery{
+
     @Expose()
     image:string
 }
@@ -89,8 +90,8 @@ servicecategory:ServiceCategory
 booking:ServiceBooking[]
 
 @Expose()
-@Type(()=>Review)
-review:Review[]
+@Type(()=>(Review))
+review:Review
 
 @Expose()
 @Type(()=>ServiceGallery)
@@ -99,14 +100,13 @@ gallery:ServiceGallery[]
 
 export class ServiceSerializer{
     @Expose()
+    message:String
+
+    @Expose()
     @Type(()=>Service)
     data:Service
 
     @Expose()
-    message:String
-
-    @Expose()
     total:number
 
-   
 }

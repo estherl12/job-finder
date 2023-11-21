@@ -25,7 +25,8 @@ export class EndusersService {
   }
 
   async findUser(id: number): Promise<enduser> {
-    return this.endUserRepo.findOne({
+    
+    return await this.endUserRepo.findOne({
       where: { id: id },
     });
   }
