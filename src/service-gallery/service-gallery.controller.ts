@@ -13,6 +13,7 @@ const VALID_UPLOADS_MIME_TYPES = ['image/png', 'application/pdf', 'image/jpeg'];
 
 @ApiTags('Service-gallery')
 @Controller('service-gallery')
+
 export class ServiceGalleryController {
   SERVER_URL = 'http://localhost:3005/';
   constructor(private readonly serviceGalleryService: ServiceGalleryService) {}

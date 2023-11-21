@@ -3,7 +3,7 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './entities/service.entity';
-import { Repository } from 'typeorm';
+import { RelationQueryBuilder, Repository } from 'typeorm';
 import { ServiceCategoryService } from 'src/service-category/service-category.service';
 
 @Injectable()
@@ -29,19 +29,22 @@ export class ServiceService {
   }
 
   async findAll() {
-    return await this.serviceRepo.find();
+    const services = await this.serviceRepo.find();
+    if(!services){
+      throw new NotFoundException("No services")
+    }
+    return services;
   }
 
   async findOne(id: number) {
     const service = await this.serviceRepo.findOne({
       where: { id: id },
-      relations: { servicecategory: true ,review:true,booking:true,gallery:true},
+      relations: { servicecategory: true ,review:{user:true},booking:true,gallery:true},
     });
     if(!service){
       throw new NotFoundException("Service not found!")
     }
-    // console.log(service.revie);
-    
+
     return service;
   }
   async findById(id:number){
@@ -68,7 +71,7 @@ export class ServiceService {
     return await this.serviceRepo.save(service)
   }
 
-  async updateForRate(id:number,rate:number){
+  async updateForRate(id:number,rate:string){
     const service = await this.serviceRepo.findOne({ where: { id: id } });
     if(!service){
       throw new NotFoundException("Service not found!")

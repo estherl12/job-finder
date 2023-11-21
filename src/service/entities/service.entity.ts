@@ -22,7 +22,7 @@ description:string
 image:string;
 
 @Column({nullable:true})
-averagerate:number;
+averagerate:string;
 
 @ManyToOne(()=>ServiceCategory,(servicecategory)=>servicecategory.service)
 @JoinColumn({name:'servicecategory_id'})

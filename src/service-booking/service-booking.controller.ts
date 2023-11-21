@@ -21,7 +21,11 @@ export class ServiceBookingController {
   async create(@Body() createServiceBookingDto: CreateServiceBookingDto,
   @CurrentUser() currentuser) {
     const user = await this.userService.findUser(currentuser.userId)
-    const booking =  this.serviceBookingService.create(createServiceBookingDto,user);
+    const booking =  await this.serviceBookingService.create(createServiceBookingDto,user);
+    delete booking.user.password
+    delete booking.user.accesstoken
+    delete booking.user.role
+    delete booking.service
     return {
       message:"Service Booked Successfully.",
       data:booking

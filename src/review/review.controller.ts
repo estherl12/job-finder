@@ -35,8 +35,10 @@ export class ReviewController {
     delete review.service.description
     delete review.service.shortDescription
     delete review.service.review
+    delete review.service.averagerate
     delete review.service.servicecategory
     delete review.service.booking
+    delete review.service.gallery
 
     return {
       message:"Review Added successfully",

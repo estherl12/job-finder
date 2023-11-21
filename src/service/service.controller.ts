@@ -55,11 +55,11 @@ export class ServiceController {
   async findOne(@Param('id',ParseIntPipe) id: number) {
 
     const data = await this.serviceService.findOne(id);
-
+  
+    
     return  plainToClass(ServiceSerializer,{
       data:data,
       message:"Data fetched successfully",
-      total:1
       
     },{strategy:"excludeAll"})
   }

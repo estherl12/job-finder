@@ -18,11 +18,11 @@ import { Expose, Type } from "class-transformer";
     @Expose()
     name:string;
 
-    @Expose()
-    email:string;
+    // @Expose()
+    // email:string;
 
-    @Expose()
-    mobile:string;
+    // @Expose()
+    // mobile:string;
 
 }
  class Review{

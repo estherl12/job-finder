@@ -2,9 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyparser from 'body-parser';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  //for retreiving or sending image path into url
+  app.useStaticAssets(join(__dirname, '..', 'files'), {
+    prefix: '/files/',
+  });
+
+  app.use(helmet())
+
 
   app.use(bodyparser.json());
   app.use(bodyparser.urlencoded({ extended: true }));

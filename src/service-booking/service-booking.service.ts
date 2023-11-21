@@ -14,7 +14,7 @@ export class ServiceBookingService {
   private services:ServiceService){}
 
   async create(createServiceBookingDto: CreateServiceBookingDto,user:enduser) {
-  const service = await this.services.findOne(createServiceBookingDto.service_id)
+  const service = await this.services.findById(createServiceBookingDto.service_id)
    const booking = new ServiceBooking()
    booking.message = createServiceBookingDto.message
    booking.email = user.email;
