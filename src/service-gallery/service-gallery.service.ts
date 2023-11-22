@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateServiceGalleryDto } from './dto/create-service-gallery.dto';
 import { UpdateServiceGalleryDto } from './dto/update-service-gallery.dto';
 import { ServiceGallery } from './entities/service-gallery.entity';
@@ -33,16 +33,26 @@ async create(createServiceGalleryDto: CreateServiceGalleryDto){
 
   async findOne(id: number) {
     const image = await this.galleryRepo.findOne({where:{id:id},})
+    if(!image){
+      throw new NotFoundException("Image not found or empty ")
+    }
     return image;
   }
 
   async update(id: number, updateServiceGalleryDto: UpdateServiceGalleryDto) {
     const Oldimage = await this.galleryRepo.findOne({where:{id:id}})
+    if(!Oldimage){
+      throw new NotFoundException("Image not found or empty ")
+    }
     Oldimage.image = updateServiceGalleryDto.image
     return await this.galleryRepo.save(Oldimage);
   }
 
   async remove(id: number) {
+    const Oldimage = await this.galleryRepo.findOne({where:{id:id}})
+    if(!Oldimage){
+      throw new NotFoundException("Image not found or empty ")
+    }
     return await this.galleryRepo.delete(id)
   }
 }

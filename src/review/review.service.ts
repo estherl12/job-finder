@@ -21,8 +21,9 @@ export class ReviewService {
   ) {}
 
   async create(createReviewDto: CreateReviewDto, user: enduser) {
+
     const service = await this.serviceServices.findOne(
-      createReviewDto.service_id,
+      createReviewDto.service_id
     );
     if (!service) {
       throw new NotFoundException('couldnot find the service');
@@ -36,30 +37,28 @@ export class ReviewService {
     Newreview.user = user;
     const newReview = await this.reviewRepository.save(Newreview);
 
-    let ratesLength = service.review.length;
-
+    //since the service has been updated so finding it again
+    const Updatedservice = await this.serviceServices.findOne(
+      createReviewDto.service_id
+    );
+   
+    let ratesLength = Updatedservice.review?.length;
     let rate = 0;
 
-    service.review.forEach((item) => {
+    Updatedservice.review.forEach((item) => {
       rate += item.rate;
     });
 
-    //above code wasnot working for first review so.
-    if (ratesLength == 0 || ratesLength == 1) {
-      ratesLength = 1;
-      rate = createReviewDto.rate;
-    }
-
     let averageRate = (rate / ratesLength).toFixed(2);
-    console.log(averageRate);
 
     const averagerate = `${averageRate}`;
-    console.log(averageRate);
+    console.log("averagerate:",averageRate);
 
     await this.serviceServices.updateForRate(
       createReviewDto.service_id,
       averagerate,
     );
+
     return newReview;
   }
 
@@ -67,6 +66,7 @@ export class ReviewService {
     const reviews = await this.reviewRepository.find({
       relations: { user: true },
     });
+    console.log(reviews)
     if (!reviews) {
       throw new NotFoundException('No reviews yet');
     }

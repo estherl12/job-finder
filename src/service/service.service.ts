@@ -44,11 +44,10 @@ export class ServiceService {
     if(!service){
       throw new NotFoundException("Service not found!")
     }
-
     return service;
   }
   async findById(id:number){
-    const service = await this.serviceRepo.findOne({where:{id:id}});
+    const service = await this.serviceRepo.findOne({where:{id:id},relations:{review:true}});
     
     return service ;
   }

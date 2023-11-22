@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UploadedFile, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UploadedFile, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ServiceGalleryService } from './service-gallery.service';
 import { CreateServiceGalleryDto } from './dto/create-service-gallery.dto';
 import { UpdateServiceGalleryDto } from './dto/update-service-gallery.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import {v4 as uuidv4} from 'uuid';
 import { extname } from 'path';
 import { multerDiskStorage, pngFileFilter } from './FileValidator/file.validator';
+import { AuthGuardJwt } from 'src/@guards/jwt-auth-guard';
 const VALID_UPLOADS_MIME_TYPES = ['image/png', 'application/pdf', 'image/jpeg'];
 
 
@@ -47,6 +48,8 @@ export class ServiceGalleryController {
   //     }
   // }
   @Post()
+  @UseGuards(AuthGuardJwt)
+  @ApiBearerAuth('JWT-auth')
   @ApiBody({type:CreateServiceGalleryDto})
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image',{
@@ -80,6 +83,8 @@ export class ServiceGalleryController {
     }
   }
 
+  @UseGuards(AuthGuardJwt)
+  @ApiBearerAuth('JWT-auth')
   @Patch(':id')
   @ApiBody({type:CreateServiceGalleryDto})
   @ApiConsumes('multipart/form-data')
@@ -95,6 +100,8 @@ export class ServiceGalleryController {
     return await this.serviceGalleryService.update(id, updateServiceGalleryDto);
   }
 
+  @UseGuards(AuthGuardJwt)
+  @ApiBearerAuth('JWT-auth')
   @Delete(':id')
   async remove(@Param('id',ParseIntPipe) id: number) {
      await this.serviceGalleryService.remove(+id);
