@@ -18,6 +18,8 @@ export class ServiceCategory {
     @Column()
     order:number;
 
-    @OneToMany(()=>Service,(service)=>service.servicecategory)
+    @OneToMany(()=>Service,(service)=>service.servicecategory,{
+        onDelete:'SET NULL',onUpdate:'CASCADE'
+    })
     service:Service
 }

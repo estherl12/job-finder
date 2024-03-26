@@ -50,7 +50,6 @@ export class ReviewService {
     });
 
     let averageRate = (rate / ratesLength).toFixed(2);
-
     const averagerate = `${averageRate}`;
     console.log("averagerate:",averageRate);
 

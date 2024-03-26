@@ -13,7 +13,10 @@ export class Review {
     @Column()
     remark:string;
 
-    @ManyToOne(()=>Service,(service)=>service.review,{onDelete:"CASCADE",onUpdate:"CASCADE"})
+    @ManyToOne(()=>Service,(service)=>service.review,{
+        onDelete:'CASCADE',
+        onUpdate:'CASCADE'
+    })
     @JoinColumn({name:'service_id'})
     service:Service
 

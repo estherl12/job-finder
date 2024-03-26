@@ -24,16 +24,22 @@ image:string;
 @Column({nullable:true})
 averagerate:string;
 
-@ManyToOne(()=>ServiceCategory,(servicecategory)=>servicecategory.service)
+@ManyToOne(()=>ServiceCategory,(servicecategory)=>servicecategory.service,{
+    onDelete:'SET NULL',onUpdate:'CASCADE'
+})
 @JoinColumn({name:'servicecategory_id'})
 servicecategory:ServiceCategory
 
 @OneToMany(()=>Review,(review)=>review.service)
 review:Review[]
 
-@OneToMany(()=>ServiceBooking,(booking)=>booking.service)
+@OneToMany(()=>ServiceBooking,(booking)=>booking.service,{
+    onDelete:'SET NULL'
+})
 booking:ServiceBooking[]
 
-@OneToMany(()=>ServiceGallery,(gallery)=>gallery.service)
+@OneToMany(()=>ServiceGallery,(gallery)=>gallery.service,{
+    onDelete:'SET NULL',onUpdate:'CASCADE'
+})
 gallery:ServiceGallery[]
 }
