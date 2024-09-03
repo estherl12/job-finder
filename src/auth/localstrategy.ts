@@ -17,7 +17,8 @@ export class LocalStrategy extends PassportStrategy(Strategy){
     @InjectRepository(enduser) 
     private readonly endUserRepository:Repository<enduser> ,
     private readonly authService:AuthService,
-    private readonly enduserService:EndusersService)
+    private readonly enduserService:EndusersService
+)
     {
         super({
             usernameField: 'email',

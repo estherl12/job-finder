@@ -174,6 +174,7 @@ export class CareerapplicationsController {
   @Roles(Role.Applicant,Role.Admin)
   async remove(@Param('id') id: string,@CurrentUser() currentuser) {
     const user = await this.userService.findUser(currentuser.userId)
+
     const data = await this.applicationService.remove(+id,user);
     return {
       status:200,

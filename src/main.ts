@@ -37,6 +37,7 @@ async function bootstrap() {
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
+  
   SwaggerModule.setup('blogapi', app, document);
   await app.listen(3005,()=>{
     console.log("server running on port 3005");

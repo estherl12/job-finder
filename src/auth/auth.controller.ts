@@ -48,7 +48,7 @@ export class AuthController {
 
         const token = await this.authService.tokenGenerator(user);
         return {
-          access_token:token
+          access_token:token 
         }
       }
 
